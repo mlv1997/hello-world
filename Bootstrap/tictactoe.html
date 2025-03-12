@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>React Game</title>
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="main.css">
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    <body>
+		    <nav class="navbar navbar-expand-md">
+                <a class="navbar-brand" href="#">TD</a>
+            <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="main-navigation">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="root"></div>
+
+        <script type="text/babel">
+            const { useState } = React;
+
+            function Square({ value, onSquareClick }) {
+                return (
+                    <button className={`square ${value === 'X' ? 'text-red-500' : value === 'O' ? 'text-blue-500' : ''}`} onClick={onSquareClick}>
+                    {value}
+                    </button>
+                );
+                }
+
+                function Board({ xIsNext, squares, onPlay }) {
+                function handleClick(i) {
+                    if (calculateWinner(squares) || squares[i]) {
+                    return;
+                    }
+                    const nextSquares = squares.slice();
+                    nextSquares[i] = xIsNext ? 'X' : 'O';
+                    onPlay(nextSquares);
+                }
+
+                const winner = calculateWinner(squares);
+                const isDraw = squares.every(square => square !== null) && !winner;
+                let status;
+                let statusClass = "text-brown-700";
+                
+                if (winner) {
+                    status = `Winner: ${winner}`;
+                    statusClass = "text-green-600";
+                } else if (isDraw) {
+                    status = "It's a Draw!";
+                    statusClass = "text-orange-700";
+                } else {
+                    status = `Next player: ${xIsNext ? 'X' : 'O'}`;
+                }
+
+                return (
+                    <div className="board-container">
+                    <div className={`status ${statusClass}`}>{status}</div>
+                    <div className="board">
+                        {squares.map((value, index) => (
+                        <Square key={index} value={value} onSquareClick={() => handleClick(index)} />
+                        ))}
+                    </div>
+                    </div>
+                );
+                }
+
+                function Form() {
+                    const [name, setName] = React.useState("");
+                    const [email, setEmail] = React.useState("");
+                    const [message, setMessage] = React.useState("");
+
+                    const [errors, setErrors] = React.useState({});
+
+                    const validateForm = () => {
+                        let newErrors = {};
+
+                        // Name Validation
+                        if (!name.trim()) {
+                            newErrors.name = "Empty Name !!";
+                        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                            newErrors.name = "Invalid name format !";
+                        }
+
+                        // Email Validation
+                        if (!email.trim()) {
+                            newErrors.email = "Empty Email !!";
+                        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                            newErrors.email = "Invalid email format !";
+                        }
+                        // Message Validation
+                        if (!message.trim()) {
+                            newErrors.message = "Invalid. Cannot be empty !";
+                        } else if (message.length < 10) {
+                            newErrors.message = "Not enough characters (Required minimum 10 characters)";
+                        }
+
+                        setErrors(newErrors);
+                        return Object.keys(newErrors).length === 0;
+                    };
+
+                    const handleSubmit = (event) => {
+                        event.preventDefault();
+                        if (validateForm()) {
+                            alert("Form has been submitted !");
+                            // You can send form data here
+                        }
+                    };
+
+                    return (
+                        <div className="form-container">
+                            <h2>Contact Us</h2>
+                            <form onSubmit={handleSubmit}>
+                                <label>Name:</label>
+                                <input 
+                                    type="text" 
+                                    className="form-input"
+                                    placeholder="Enter name" 
+                                    value={name} 
+                                    onChange={(e) => setName(e.target.value)} 
+                                />
+                                {errors.name && <p className="error-message">{errors.name}</p>}
+
+                                <label>Email:</label>
+                                <input 
+                                    type="email" 
+                                    className="form-input"
+                                    placeholder="Enter Email" 
+                                    value={email} 
+                                    onChange={(e) => setEmail(e.target.value)} 
+                                />
+                                {errors.email && <p className="error-message">{errors.email}</p>}
+
+                                <label>Message:</label>
+                                <textarea 
+                                    className="form-textarea" 
+                                    placeholder="Enter your message" 
+                                    value={message} 
+                                    onChange={(e) => setMessage(e.target.value)} 
+                                />
+                                {errors.message && <p className="error-message">{errors.message}</p>}
+
+                                <button type="submit" className="form-button">Send message</button>
+                            </form>
+                        </div>
+                    );
+                }
+
+
+
+                function Game() {
+                const [history, setHistory] = useState([Array(9).fill(null)]);
+                const [currentMove, setCurrentMove] = useState(0);
+                const xIsNext = currentMove % 2 === 0;
+                const currentSquares = history[currentMove];
+
+                function handlePlay(nextSquares) {
+                    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+                    setHistory(nextHistory);
+                    setCurrentMove(nextHistory.length - 1);
+                }
+
+                function jumpTo(nextMove) {
+                    setCurrentMove(nextMove);
+                }
+
+                const moves = history.map((squares, move) => {
+                    let description;
+                    if (move > 0) {
+                    description = 'Go to move #' + move;
+                    } else {
+                    description = 'Go to game start';
+                    }
+                    return (
+                    <li key={move}>
+                        <button className="btn btn-primary btn-2g" onClick={() => jumpTo(move)}>
+                        {description}
+                        </button>
+                    </li>
+                    );
+                });
+
+                return (
+                    <div className="game-container">
+                    <div className="flex justify-between w-full max-w-4xl">
+                        <Form />
+                        <div className="game-board">
+                        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+                        </div>
+                        <div className="game-info p-4 bg-white shadow-md rounded-md">
+                        <div className="text-lg font-bold mb-2 text-black font-extrabold">Malavika Velayudhan Nair</div>
+                        <div className="text-lg font-bold mb-2 text-black font-extrabold">24251612</div>
+                        <br></br>
+                        <div className="text-xl font-bold mb-2">Game Status</div>
+                        <div className="text-lg mb-4">{xIsNext ? "Next: X" : "Next: O"}</div>
+                        <ol className="space-y-2">{moves}</ol>
+                        </div>
+                    </div>
+                    </div>
+                );
+                }
+
+                function calculateWinner(squares) {
+                const lines = [
+                    [0, 1, 2],
+                    [3, 4, 5],
+                    [6, 7, 8],
+                    [0, 3, 6],
+                    [1, 4, 7],
+                    [2, 5, 8],
+                    [0, 4, 8],
+                    [2, 4, 6],
+                ];
+                for (let i = 0; i < lines.length; i++) {
+                    const [a, b, c] = lines[i];
+                    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+                    return squares[a];
+                    }
+                }
+                return null;
+                }
+
+                ReactDOM.createRoot(document.getElementById('root')).render(<Game />);
+    </script>
+</body>
+</html>
