@@ -1,0 +1,75 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin-top: 8%;
+  background-image: url('bookshelf.jpg');
+  background-position: center;
+  background-attachment: fixed;
+  height: 100%; 
+  width: 100%; 
+  position: fixed; 
+  background-size: inherit;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  font-weight: bold;
+  padding: 50px;
+  background-color: #eddba4e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #343a40;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #684e1d;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #b19c75;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #e9ecef;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  color: #495057;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
